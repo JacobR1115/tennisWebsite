@@ -19,6 +19,9 @@
                     <form th:action="@{/clubs/search}" class="form-inline my-2 my-lg-0 mb-3">
                         <input name="query" class="form-control mr-sm-2 mb-5" type="search" placeholder="Search tennis clubs" aria-label="Search">
                     </form>
+                    <form th:action="@{/clubs/location}" class="form-inline my-2 my-lg-0 mb-3">
+                        <input name="origin" class="form-control mr-sm-2 mb-5" type="search" placeholder="Find Clubs Near You" aria-label="Search">
+                    </form>
                 </div>
                 <div th:each="club :${clubs}" class="col-lg-6 mb-2" >
                     <div class="position-relative mb-3">

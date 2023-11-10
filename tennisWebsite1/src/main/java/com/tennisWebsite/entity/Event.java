@@ -23,6 +23,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String city;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String type;

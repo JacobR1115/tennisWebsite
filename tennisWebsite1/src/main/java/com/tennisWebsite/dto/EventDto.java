@@ -24,6 +24,7 @@ public class EventDto {
     private LocalDateTime endTime;
     private String type;
     private String photoUrl;
+    private String city;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
     private Club club;

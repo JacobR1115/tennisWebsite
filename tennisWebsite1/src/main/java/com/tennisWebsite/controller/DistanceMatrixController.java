@@ -18,8 +18,8 @@ public class DistanceMatrixController {
 
     @GetMapping(value = "/distance", consumes = MediaType.ALL_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    public DistanceMatrixResponse GetDistanceBetweenLocations(@RequestParam String destination, @RequestParam String origin) {
+    public DistanceMatrixResponse GetDistanceBetweenLocations(@RequestParam String destinations, @RequestParam String origin) {
 
-        return distanceMatrixService.fetchDistanceByLocation(destination, origin);
+        return distanceMatrixService.fetchDistanceByLocation(destinations, origin);
     }
 }

@@ -27,10 +27,10 @@ public class DistanceMatrixServiceImpl implements DistanceMatrixService {
 
 
     @Override
-    public DistanceMatrixResponse fetchDistanceByLocation(String destination, String origin) {
+    public DistanceMatrixResponse fetchDistanceByLocation(String destinations, String origin) {
 
         String url = "https://maps.googleapis.com/maps/api/distancematrix/json" +
-                "?destinations=" + destination +
+                "?destinations=" + destinations +
                 "&origins=" + origin +
                 "&units=imperial" +
                 "&key=" + apiKey;

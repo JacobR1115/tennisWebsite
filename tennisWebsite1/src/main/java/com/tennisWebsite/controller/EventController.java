@@ -1,18 +1,21 @@
 package com.tennisWebsite.controller;
 
+import com.tennisWebsite.dto.ClubDto;
 import com.tennisWebsite.dto.EventDto;
+import com.tennisWebsite.entity.DistanceMatrixDetails;
+import com.tennisWebsite.entity.DistanceMatrixElements;
+import com.tennisWebsite.entity.DistanceMatrixResponse;
 import com.tennisWebsite.entity.Event;
+import com.tennisWebsite.service.DistanceMatrixService;
 import com.tennisWebsite.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -20,9 +23,12 @@ public class EventController {
 
     private EventService eventService;
 
+    private DistanceMatrixService distanceMatrixService;
+
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, DistanceMatrixService distanceMatrixService) {
         this.eventService = eventService;
+        this.distanceMatrixService = distanceMatrixService;
     }
 
     @GetMapping("/events")
@@ -85,5 +91,33 @@ public class EventController {
     public String deleteEvent(@PathVariable("eventId") long eventId) {
         eventService.deleteEvent(eventId);
         return "redirect:/events";
+    }
+
+    @GetMapping("/events/location")
+    public String searchEventByLocation(@RequestParam("origin") String origin, Model model) {
+        List<EventDto> allEvents = eventService.findAllEvents();
+
+        List<EventDto> events = new ArrayList<>();
+
+        for (EventDto event: allEvents) {
+            DistanceMatrixResponse response = distanceMatrixService.fetchDistanceByLocation(event.getCity(), origin);
+
+            float distance = Integer.MAX_VALUE;
+
+            List<DistanceMatrixElements> rows = response.getRows();
+            for (DistanceMatrixElements elements: rows) {
+                List<DistanceMatrixDetails> details = elements.getElements();
+                for (DistanceMatrixDetails values: details) {
+                    String str = values.getDistanceValue().getText();
+                    String[] splitStr = str.split("\\s+");
+                    distance = Float.parseFloat(splitStr[0]);
+                }
+            }
+
+            if (distance < 100) events.add(event);
+        }
+
+        model.addAttribute("events", events);
+        return "events-list";
     }
 }

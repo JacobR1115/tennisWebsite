@@ -36,7 +36,7 @@
                                 placeholder="Photo URL">
                         <p th:if="${#fields.hasErrors('photoUrl')}" class="text-danger" th:errors="*{photoUrl}"></p>
                     </div>
-                    <div class="form-group mb-3">
+                    <div class="form-group col-md-6">
                         <label for="content">Content</label>
                         <input
                                 type="text"
@@ -46,6 +46,17 @@
                                 th:field="*{content}"
                                 placeholder="Content">
                         <p th:if="${#fields.hasErrors('content')}" class="text-danger" th:errors="*{content}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="city">City</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="city"
+                                name="city"
+                                th:field="*{city}"
+                                placeholder="City">
+                        <p th:if="${#fields.hasErrors('city')}" class="text-danger" th:errors="*{city}"></p>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Create</button>

@@ -22,6 +22,7 @@ public class ClubDto {
     private String photoUrl;
     @NotEmpty(message = "Content should not be empty")
     private String content;
+    private String city;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
     private List<EventDto> events;

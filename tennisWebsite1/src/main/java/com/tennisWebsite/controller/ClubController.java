@@ -2,7 +2,11 @@ package com.tennisWebsite.controller;
 
 import com.tennisWebsite.dto.ClubDto;
 import com.tennisWebsite.entity.Club;
+import com.tennisWebsite.entity.DistanceMatrixDetails;
+import com.tennisWebsite.entity.DistanceMatrixElements;
+import com.tennisWebsite.entity.DistanceMatrixResponse;
 import com.tennisWebsite.service.ClubService;
+import com.tennisWebsite.service.DistanceMatrixService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -17,9 +22,12 @@ public class ClubController {
 
     private ClubService clubService;
 
+    private DistanceMatrixService distanceMatrixService;
+
     @Autowired
-    public ClubController(ClubService clubService) {
+    public ClubController(ClubService clubService, DistanceMatrixService distanceMatrixService) {
         this.clubService = clubService;
+        this.distanceMatrixService = distanceMatrixService;
     }
 
 
@@ -91,6 +99,34 @@ public class ClubController {
         List<ClubDto> clubs = clubService.searchClubs(query);
         model.addAttribute("clubs", clubs);
 
+        return "clubs-list";
+    }
+
+    @GetMapping("/clubs/location")
+    public String searchClubByLocation(@RequestParam("origin") String origin, Model model) {
+        List<ClubDto> allClubs = clubService.findAllClubs();
+
+        List<ClubDto> clubs = new ArrayList<>();
+
+        for (ClubDto club: allClubs) {
+            DistanceMatrixResponse response = distanceMatrixService.fetchDistanceByLocation(club.getCity(), origin);
+
+            float distance = Integer.MAX_VALUE;
+
+            List<DistanceMatrixElements> rows = response.getRows();
+            for (DistanceMatrixElements elements: rows) {
+                List<DistanceMatrixDetails> details = elements.getElements();
+                for (DistanceMatrixDetails values: details) {
+                    String str = values.getDistanceValue().getText();
+                    String[] splitStr = str.split("\\s+");
+                    distance = Float.parseFloat(splitStr[0]);
+                }
+            }
+
+            if (distance < 100) clubs.add(club);
+        }
+
+        model.addAttribute("clubs", clubs);
         return "clubs-list";
     }
 }
